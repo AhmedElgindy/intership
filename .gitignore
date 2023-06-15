@@ -1,0 +1,21 @@
+# Ignore Django-related files and directories
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+
+# Ignore development settings
+settings/local.py
+settings/development.py
+
+# Ignore static files
+staticfiles/
+
+# Ignore media files
+media/
+
+# Ignore virtual environment
+.venv/
+
+static
