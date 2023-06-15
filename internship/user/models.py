@@ -11,7 +11,11 @@ class UserProfile(AbstractUser):
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     pincode = models.CharField(max_length=10)
+    is_patient = models.BooleanField(default=False)
+    is_doctor = models.BooleanField(default=False)
 
     REQUIRED_FIELDS = []
     def __str__(self):
         return self.username
+
+

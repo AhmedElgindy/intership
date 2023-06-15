@@ -5,19 +5,35 @@ from .models import UserProfile
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
-
-def register(request):
+def registerPatient(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
+            user.is_patient = True
             user.password = make_password(form.cleaned_data['password'])
             user.save()
-            return redirect(reverse('dashboard') + f'?username={user.username}')
+            return render(request, 'login.html')
+
     else:
         form = RegistrationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'registerPatient.html', {'form': form})
+
+def registerDoctor(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_doctor = True
+            user.password = make_password(form.cleaned_data['password'])
+            user.save()
+            return render(request, 'login.html')
+
+    else:
+        form = RegistrationForm()
+    return render(request, 'registerDoctor.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':
@@ -25,23 +41,30 @@ def login_view(request):
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            return redirect(reverse('dashboard') + f'?username={user.username}')
+            if user.is_patient:
+                login(request, user)
+                return redirect(reverse('dashboard-patinet') + f'?user name={user.username}')
+            elif user.is_doctor:
+                login(request, user)
+                return redirect(reverse('dashboard-doctor') + f'?user name={user.username}')
+            else:
+                messages.error(request, 'Invalid user type.')
         else:
             messages.error(request, 'Invalid username or password.')
-            print("erorr in login")
-            return redirect('login') 
-    else:
-        return render(request, 'login.html')
+    return render(request, 'login.html')
     
-def dashboard(request):
-    username = request.GET.get('username')
-    if username:
-        try:
-            user_profile = UserProfile.objects.get(username=username)
-            return render(request, 'dashboard.html', {'user_profile': user_profile})
-        except UserProfile.DoesNotExist:
-            messages.error(request, 'User not found.')
-            return redirect('dashboard')
-    return render(request, 'dashboard.html')
+@login_required(login_url='login')
+def dashboardPatient(request):
+    user_profile = request.user
+    if user_profile.is_patient:
+        return render(request, 'dashboardPatient.html', {'user_profile': user_profile})
+    else:
+        return redirect('login')  # Redirect to login if the user is not a patient
 
+@login_required(login_url='login')
+def dashboardDoctor(request):
+    user_profile = request.user
+    if user_profile.is_doctor:
+        return render(request, 'dashboardDoctor.html', {'user_profile': user_profile})
+    else:
+        return redirect('login')  # Redirect to login if the user is not a doctor
