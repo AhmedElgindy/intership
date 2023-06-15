@@ -11,25 +11,38 @@ def registerPatient(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_patient = True
-            user.password = make_password(form.cleaned_data['password'])
-            user.save()
-            return render(request, 'login.html')
-
+            password = form.cleaned_data['password']
+            confirm_password = form.cleaned_data['confirm_password']
+            
+            if password == confirm_password:
+                user = form.save(commit=False)
+                user.is_patient = True
+                user.password = make_password(password)
+                user.save()
+                return render(request, 'login.html')
+            else:
+                form.add_error('confirm_password', 'Passwords do not match.')
     else:
         form = RegistrationForm()
+    
     return render(request, 'registerPatient.html', {'form': form})
 
 def registerDoctor(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_doctor = True
-            user.password = make_password(form.cleaned_data['password'])
-            user.save()
-            return render(request, 'login.html')
+            password = form.cleaned_data['password']
+            confirm_password = form.cleaned_data['confirm_password']
+            
+            if password == confirm_password:
+                user = form.save(commit=False)
+                user.is_doctor = True
+                user.password = make_password(password)
+                user.save()
+                return render(request, 'login.html')
+            else:
+                form.add_error('confirm_password', 'Passwords do not match.')
+                print(form.errors)
 
     else:
         form = RegistrationForm()

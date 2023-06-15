@@ -46,5 +46,12 @@
     <input type="text" id="id_pincode" name="pincode" required>
     <br>
 
+   
+  {% if form.errors %}
+  <div class="error-message" style="color: black;">
+    <p>{{ form.errors.confirm_password }}</p>
+  </div>
+  {% endif %}
+
     <button type="submit">Register</button>
 </form>
