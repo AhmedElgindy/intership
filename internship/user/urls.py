@@ -9,6 +9,7 @@ urlpatterns = [
     path('dashboard-patient/', views.dashboardPatient, name='dashboard-patinet'),
     path('dashboard-doctor/', views.dashboardDoctor, name='dashboard-doctor'),
     path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

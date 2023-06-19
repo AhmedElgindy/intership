@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import RegistrationForm
 from .models import UserProfile
+from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -81,3 +82,7 @@ def dashboardDoctor(request):
         return render(request, 'dashboardDoctor.html', {'user_profile': user_profile})
     else:
         return redirect('login')  # Redirect to login if the user is not a doctor
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
