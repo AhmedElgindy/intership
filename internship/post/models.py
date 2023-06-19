@@ -15,6 +15,7 @@ class Post(models.Model):
         ('immunization', 'Immunization'),
     ]
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
+    draft = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -22,4 +23,4 @@ class Post(models.Model):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'image', 'category', 'summary', 'content']
+        fields = ['title', 'image', 'category', 'summary', 'content','draft']
